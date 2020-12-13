@@ -6,18 +6,38 @@
 package UserInterface.Lessor;
 
 import CompanyInterface.*;
+import InterfaceMain.MainJFrame;
+import com.br.dao.CarDao;
+import com.br.daoImpl.CarDaoImpl;
+import com.br.entity.Car;
+import java.util.Vector;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Alex Zhu
  */
 public class AllMyCar extends javax.swing.JPanel {
+    
+    private CarDao carDao = new CarDaoImpl();
+    public static Car viewCar = null;
 
     /**
      * Creates new form CarManage
      */
     public AllMyCar() {
         initComponents();
+        try {
+            initTable();
+        } catch (SQLException ex) {
+            Logger.getLogger(AllMyCar.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -41,22 +61,37 @@ public class AllMyCar extends javax.swing.JPanel {
 
         btnBack.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         btnBack.setText("BACK");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Brand", "Model", "Car Number", "Status"
+                "id", "Brand", "Model", "Car Number", "Status", "status_by"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
 
         btnBan.setFont(new java.awt.Font("宋体", 0, 14)); // NOI18N
-        btnBan.setText("Retrieve a car");
+        btnBan.setText("Take back a car");
+        btnBan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBanActionPerformed(evt);
+            }
+        });
 
         btnView.setFont(new java.awt.Font("宋体", 0, 14)); // NOI18N
         btnView.setText("View car");
+        btnView.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViewActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -72,14 +107,13 @@ public class AllMyCar extends javax.swing.JPanel {
                         .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 176, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGap(0, 168, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnView, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnBan)))
-                .addGap(140, 140, 140))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(btnView, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnBan, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(148, 148, 148))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -90,14 +124,68 @@ public class AllMyCar extends javax.swing.JPanel {
                 .addComponent(jLabel1)
                 .addGap(49, 49, 49)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26)
+                .addComponent(btnBan)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnBan)
-                    .addComponent(btnView))
-                .addContainerGap(300, Short.MAX_VALUE))
+                .addComponent(btnView)
+                .addContainerGap(249, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        // TODO add your handling code here:
+        JPanel lessorPanel = new LessorMain();
+        MainJFrame.jSplitPane1.setRightComponent(lessorPanel);
+    }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnBanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBanActionPerformed
+        // TODO add your handling code here:
+        Integer id = (Integer)jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+        		Boolean deleteFlag = carDao.deleteCar(id);
+        		if(deleteFlag == true) {
+        			JOptionPane.showMessageDialog(null, "收回成功");
+        			try {
+						initTable();
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+					}
+        		}else {
+        			JOptionPane.showMessageDialog(null, "发生错误，收回失败");
+        		}
+    }//GEN-LAST:event_btnBanActionPerformed
+
+    private void btnViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewActionPerformed
+        // TODO add your handling code here:
+        Integer id = (Integer)jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+        viewCar = carDao.selectById(id);
+        ViewCar vc = new ViewCar();
+        MainJFrame.jSplitPane1.setRightComponent(vc);
+    }//GEN-LAST:event_btnViewActionPerformed
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public void initTable() throws SQLException {
+		DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
+		dtm.setRowCount(0);
+		ResultSet rs = carDao.selectSelfCar(MainJFrame.currentUser.getId());
+		while (rs.next()) {
+			Vector v = new Vector();
+			v.add(rs.getInt("id"));
+			v.add(rs.getString("brand"));
+			v.add(rs.getString("model"));
+			v.add(rs.getString("car_number"));
+			if(("0").equals(rs.getString("status"))) {
+				v.add("未认证");
+			}else {
+				v.add("已认证");
+			}
+			if(("0").equals(rs.getString("status_by"))) {
+				v.add("未被使用");
+			}else {
+				v.add("已被使用");
+			}
+			dtm.addRow(v);
+		}
+	}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;

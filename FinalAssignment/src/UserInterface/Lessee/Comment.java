@@ -5,11 +5,18 @@
  */
 package UserInterface.Lessee;
 
+import InterfaceMain.MainJFrame;
+import com.br.dao.OrderDao;
+import com.br.daoImpl.OrderDaoImpl;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Alex Zhu
  */
 public class Comment extends javax.swing.JPanel {
+    
+    private OrderDao orderDao = new OrderDaoImpl();
 
     /**
      * Creates new form Comment
@@ -37,6 +44,11 @@ public class Comment extends javax.swing.JPanel {
 
         btnBack.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         btnBack.setText("BACK");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
 
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -46,6 +58,11 @@ public class Comment extends javax.swing.JPanel {
 
         btnSubmit.setFont(new java.awt.Font("宋体", 0, 14)); // NOI18N
         btnSubmit.setText("Submit");
+        btnSubmit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSubmitActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -87,6 +104,29 @@ public class Comment extends javax.swing.JPanel {
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        // TODO add your handling code here:
+        AllMyOrder amo = new AllMyOrder();
+        MainJFrame.jSplitPane1.setRightComponent(amo);
+    }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
+        // TODO add your handling code here:
+        String comment = jTextField1.getText().toString();
+        		if(comment != null && !("").equals(comment)) {
+        			Boolean updateFlag = orderDao.updateComment(UserInterface.Lessee.AllMyOrder.commentOrderId, comment);
+        			if(updateFlag == true) {
+        				JOptionPane.showMessageDialog(null, "评论成功");
+        				AllMyOrder amo = new AllMyOrder();
+                		MainJFrame.jSplitPane1.setRightComponent(amo);
+        			}else {
+        				JOptionPane.showMessageDialog(null, "发生错误，评论失败");
+        			}
+        		}else {
+        			JOptionPane.showMessageDialog(null, "请输入评论内容");
+        		}
+    }//GEN-LAST:event_btnSubmitActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

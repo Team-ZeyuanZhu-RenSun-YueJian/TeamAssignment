@@ -5,17 +5,30 @@
  */
 package UserInterface.Sysadmin;
 
+import InterfaceMain.MainJFrame;
+import com.br.dao.UserDao;
+import com.br.daoImpl.UserDaoImpl;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Alex Zhu
  */
 public class ViewDriver extends javax.swing.JPanel {
+    
+    private UserDao userDao = new UserDaoImpl();
 
     /**
      * Creates new form ViewDriver
      */
     public ViewDriver() {
         initComponents();
+        txtUserName.setEditable(false);
+                txtPassword.setEditable(false);
+                txtName.setEditable(false);
+                txtID.setEditable(false);
+                txtPhoneNo.setEditable(false);
+                txtAge.setEditable(false);
     }
 
     /**
@@ -46,6 +59,11 @@ public class ViewDriver extends javax.swing.JPanel {
 
         btnUpdate.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         btnUpdate.setText("Update");
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateActionPerformed(evt);
+            }
+        });
 
         jLabel6.setFont(new java.awt.Font("宋体", 0, 14)); // NOI18N
         jLabel6.setText("User Name");
@@ -58,9 +76,18 @@ public class ViewDriver extends javax.swing.JPanel {
 
         btnBack.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
         btnBack.setText("BACK");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
+
+        txtUserName.setText(UserInterface.Sysadmin.ManageDriver.viewDriver.getUserNumber());
 
         jLabel2.setFont(new java.awt.Font("宋体", 0, 14)); // NOI18N
         jLabel2.setText("Age");
+
+        txtPassword.setText(UserInterface.Sysadmin.ManageDriver.viewDriver.getUserPassword());
 
         jLabel3.setFont(new java.awt.Font("宋体", 0, 14)); // NOI18N
         jLabel3.setText("Driver license ID");
@@ -71,8 +98,21 @@ public class ViewDriver extends javax.swing.JPanel {
         jLabel5.setFont(new java.awt.Font("宋体", 0, 14)); // NOI18N
         jLabel5.setText("Phone Number");
 
+        txtName.setText(UserInterface.Sysadmin.ManageDriver.viewDriver.getUserName());
+
+        txtID.setText(UserInterface.Sysadmin.ManageDriver.viewDriver.getUserDriverLicenseId());
+
+        txtPhoneNo.setText(UserInterface.Sysadmin.ManageDriver.viewDriver.getUserTel());
+
+        txtAge.setText(UserInterface.Sysadmin.ManageDriver.viewDriver.getUserAge());
+
         btnSave.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         btnSave.setText("Save");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -133,9 +173,7 @@ public class ViewDriver extends javax.swing.JPanel {
                     .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(4, 4, 4)
-                        .addComponent(jLabel4))
+                    .addComponent(jLabel4)
                     .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -156,6 +194,58 @@ public class ViewDriver extends javax.swing.JPanel {
                 .addGap(97, 97, 97))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        // TODO add your handling code here:
+        ManageDriver md = new ManageDriver();
+        MainJFrame.jSplitPane1.setRightComponent(md);
+    }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        // TODO add your handling code here:
+        txtUserName.setEditable(true);
+                txtPassword.setEditable(true);
+                txtName.setEditable(true);
+                txtID.setEditable(true);
+                txtPhoneNo.setEditable(true);
+                txtAge.setEditable(true);
+    }//GEN-LAST:event_btnUpdateActionPerformed
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        // TODO add your handling code here:\
+        String user_number = txtUserName.getText().toString();
+        		String user_password = txtPassword.getText().toString();
+        		String user_name = txtName.getText().toString();
+        		String user_tel = txtPhoneNo.getText().toString();
+        		String user_driver_license_id = txtID.getText().toString();
+        		String user_age = txtAge.getText().toString();
+        		if(("").equals(user_number) || ("").equals(user_password) || ("").equals(user_name) 
+        				|| ("").equals(user_driver_license_id) || ("").equals(user_age) || ("").equals(user_tel)) {
+        			JOptionPane.showMessageDialog(null, "请输入完整信息");
+        		}else {
+        			if(userDao.selectByNumber(user_number,"司机") != null && userDao.selectByNumber(user_number,"司机").getId() != UserInterface.Sysadmin.ManageDriver.viewDriver.getId()) {
+        				JOptionPane.showMessageDialog(null, "该账号已被使用");
+        			}else {
+        				UserInterface.Sysadmin.ManageDriver.viewDriver.setUserName(user_name);
+        				UserInterface.Sysadmin.ManageDriver.viewDriver.setUserNumber(user_number);
+        				UserInterface.Sysadmin.ManageDriver.viewDriver.setUserPassword(user_password);
+        				UserInterface.Sysadmin.ManageDriver.viewDriver.setUserType("司机");
+        				UserInterface.Sysadmin.ManageDriver.viewDriver.setUserDriverLicenseId(user_driver_license_id);
+        				UserInterface.Sysadmin.ManageDriver.viewDriver.setUserAge(user_age);
+        				UserInterface.Sysadmin.ManageDriver.viewDriver.setUserTel(user_tel);
+        				UserInterface.Sysadmin.ManageDriver.viewDriver.setStatus("0");
+        				UserInterface.Sysadmin.ManageDriver.viewDriver.setStatus_by("0");
+            			Boolean upadteFlag = userDao.updateUser(UserInterface.Sysadmin.ManageDriver.viewDriver);
+            			if(upadteFlag == true) {
+            				JOptionPane.showMessageDialog(null, "修改成功");
+            				ManageDriver md = new ManageDriver();
+            				MainJFrame.jSplitPane1.setRightComponent(md);
+            			}else {
+            				JOptionPane.showMessageDialog(null, "发生错误，修改失败");
+            			}
+        			}
+        		}
+    }//GEN-LAST:event_btnSaveActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

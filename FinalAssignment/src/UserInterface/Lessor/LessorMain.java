@@ -5,6 +5,8 @@
  */
 package UserInterface.Lessor;
 
+import InterfaceMain.MainJFrame;
+
 /**
  *
  * @author Alex Zhu
@@ -36,9 +38,19 @@ public class LessorMain extends javax.swing.JPanel {
 
         btnCarList.setFont(new java.awt.Font("宋体", 0, 14)); // NOI18N
         btnCarList.setText("All My Car");
+        btnCarList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCarListActionPerformed(evt);
+            }
+        });
 
         btnAddCar.setFont(new java.awt.Font("宋体", 0, 14)); // NOI18N
         btnAddCar.setText("Add a Car");
+        btnAddCar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddCarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -68,6 +80,18 @@ public class LessorMain extends javax.swing.JPanel {
                 .addContainerGap(332, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnAddCarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddCarActionPerformed
+        // TODO add your handling code here:
+        AddCar ac = new AddCar();
+        MainJFrame.jSplitPane1.setRightComponent(ac);
+    }//GEN-LAST:event_btnAddCarActionPerformed
+
+    private void btnCarListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCarListActionPerformed
+        // TODO add your handling code here:
+        AllMyCar amc = new AllMyCar();
+        MainJFrame.jSplitPane1.setRightComponent(amc);
+    }//GEN-LAST:event_btnCarListActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

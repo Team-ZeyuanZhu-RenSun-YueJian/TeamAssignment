@@ -5,17 +5,34 @@
  */
 package CompanyInterface;
 
+import InterfaceMain.MainJFrame;
+import com.br.dao.CarDao;
+import com.br.daoImpl.CarDaoImpl;
+import com.br.entity.Car;
+import java.util.Vector;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Alex Zhu
  */
 public class ManageCar extends javax.swing.JPanel {
+    
+    private CarDao carDao = new CarDaoImpl();
+    public static Car viewCar = null;
 
     /**
      * Creates new form CarManage
      */
-    public ManageCar() {
+    public ManageCar() throws Exception {
         initComponents();
+        initTable();
     }
 
     /**
@@ -34,31 +51,76 @@ public class ManageCar extends javax.swing.JPanel {
         btnAdd = new javax.swing.JButton();
         btnBan = new javax.swing.JButton();
         btnView = new javax.swing.JButton();
+        btnVerfiy = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         jLabel1.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
         jLabel1.setText("Car List");
 
         btnBack.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         btnBack.setText("BACK");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Brand", "Model", "Seats", "Price(Per Day)", "Aviliable Time"
+                "id", "Model", "Seats", "Price(Per Day)", "Aviliable Time", "Status", "Standby"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, true, true, true, true, true, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
 
         btnAdd.setFont(new java.awt.Font("宋体", 0, 14)); // NOI18N
         btnAdd.setText("Add a car");
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
 
         btnBan.setFont(new java.awt.Font("宋体", 0, 14)); // NOI18N
         btnBan.setText("Ban a car");
+        btnBan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBanActionPerformed(evt);
+            }
+        });
 
         btnView.setFont(new java.awt.Font("宋体", 0, 14)); // NOI18N
         btnView.setText("View car");
+        btnView.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViewActionPerformed(evt);
+            }
+        });
+
+        btnVerfiy.setFont(new java.awt.Font("宋体", 0, 14)); // NOI18N
+        btnVerfiy.setText("Verfiy a car");
+        btnVerfiy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVerfiyActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("Delete Car");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -76,12 +138,14 @@ public class ManageCar extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 168, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnAdd)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnView, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnBan, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 599, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(149, 149, 149))
+                        .addComponent(btnAdd, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnBan, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnVerfiy, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)))
+                .addGap(148, 148, 148))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -93,21 +157,128 @@ public class ManageCar extends javax.swing.JPanel {
                 .addGap(49, 49, 49)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
+                .addComponent(btnVerfiy)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnAdd)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnBan)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnView)
-                .addContainerGap(222, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jButton1)
+                .addContainerGap(147, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        // TODO add your handling code here:
+        JPanel CompanyPanel = new CompanyMain();
+        MainJFrame.jSplitPane1.setRightComponent(CompanyPanel);
+    }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnVerfiyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerfiyActionPerformed
+        // TODO add your handling code here:
+        //认证
+        		Integer id = (Integer)jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+        		Car c = carDao.selectById(id);
+        		c.setStatus("1");
+        		Boolean updateFlag = carDao.updateCar(c);
+        		if(updateFlag == true) {
+        			JOptionPane.showMessageDialog(null, "认证成功");
+        			try {
+						initTable();
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+        		}else {
+        			JOptionPane.showMessageDialog(null, "发生错误，认证失败");
+        		}
+    }//GEN-LAST:event_btnVerfiyActionPerformed
+
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        // TODO add your handling code here:
+        AddCar ac = new AddCar();
+        MainJFrame.jSplitPane1.setRightComponent(ac);
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    private void btnBanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBanActionPerformed
+        // TODO add your handling code here:
+        //设置未认证
+        		Integer id = (Integer)jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+        		Car c = carDao.selectById(id);
+        		c.setStatus("0");
+        		Boolean updateFlag = carDao.updateCar(c);
+        		if(updateFlag == true) {
+        			JOptionPane.showMessageDialog(null, "设置回未认证成功");
+                            try {
+                                initTable();
+                            } catch (Exception ex) {
+                                Logger.getLogger(ManageCar.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+        		}else {
+        			JOptionPane.showMessageDialog(null, "发生错误，设置失败");
+        		}
+    }//GEN-LAST:event_btnBanActionPerformed
+
+    private void btnViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewActionPerformed
+        // TODO add your handling code here:
+        Integer id = (Integer)jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+        viewCar = carDao.selectById(id);
+        ViewCar vc = new ViewCar();
+        MainJFrame.jSplitPane1.setRightComponent(vc);
+    }//GEN-LAST:event_btnViewActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        Integer id = (Integer)jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+        		Boolean deleteFlag = carDao.deleteCar(id);
+        		if(deleteFlag == true) {
+        			JOptionPane.showMessageDialog(null, "删除成功");
+            try {
+                initTable();
+            } catch (Exception ex) {
+                Logger.getLogger(ManageCar.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        		}else {
+        			JOptionPane.showMessageDialog(null, "发生错误，删除失败");
+        		}
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public void initTable()
+                throws Exception {
+		DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
+		dtm.setRowCount(0);
+		ResultSet rs = carDao.selectSelfCar(MainJFrame.currentUser.getId());
+		while (rs.next()) {
+			Vector v = new Vector();
+			v.add(rs.getInt("id"));
+			v.add(rs.getString("model"));
+			v.add(rs.getString("seats"));
+			v.add(rs.getString("price"));
+			v.add(rs.getString("aviliable_time"));
+			if(("0").equals(rs.getString("status"))) {
+				v.add("未认证");
+			}else {
+				v.add("已认证");
+			}
+			if(("0").equals(rs.getString("status_by"))) {
+				v.add("未被使用");
+			}else {
+				v.add("已被使用");
+			}
+			dtm.addRow(v);
+		}
+	}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnBan;
+    private javax.swing.JButton btnVerfiy;
     private javax.swing.JButton btnView;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;

@@ -5,19 +5,36 @@
  */
 package UserInterface.Driver;
 
+import InterfaceMain.MainJFrame;
 import UserInterface.Lessee.*;
+import com.br.dao.OrderDao;
+import com.br.daoImpl.OrderDaoImpl;
+import java.util.Vector;
+import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Alex Zhu
  */
 public class MyOrder extends javax.swing.JPanel {
+    
+    private OrderDao orderDao = new OrderDaoImpl();
 
     /**
      * Creates new form MyOrder
      */
     public MyOrder() {
         initComponents();
+        try {
+            initTable();
+        } catch (SQLException ex) {
+            Logger.getLogger(MyOrder.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -39,6 +56,11 @@ public class MyOrder extends javax.swing.JPanel {
 
         btnBack.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         btnBack.setText("BACK");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -81,6 +103,26 @@ public class MyOrder extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        // TODO add your handling code here:
+        JPanel DriverPanel = new DriverMain();
+        MainJFrame.jSplitPane1.setRightComponent(DriverPanel);
+    }//GEN-LAST:event_btnBackActionPerformed
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+   	public void initTable() throws SQLException {
+   		DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
+   		dtm.setRowCount(0);
+   		ResultSet rs = orderDao.selectSelfDriver(MainJFrame.currentUser.getId());
+   		while (rs.next()) {
+   			//只显示需要司机的,斌且公司已经确认的
+			Vector v = new Vector();
+   			v.add(rs.getString("id"));
+   			v.add(rs.getString("aviliable_time"));
+   			v.add(rs.getString("comment") );
+   			dtm.addRow(v);
+   		}
+   	}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;

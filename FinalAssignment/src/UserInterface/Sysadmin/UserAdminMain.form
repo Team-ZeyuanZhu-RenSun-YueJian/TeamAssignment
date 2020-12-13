@@ -59,6 +59,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Lessee Manage"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLeseeActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnDriver">
       <Properties>
@@ -67,6 +70,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Driver Manage"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDriverActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
@@ -83,6 +89,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Lessor Manage"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLesorActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

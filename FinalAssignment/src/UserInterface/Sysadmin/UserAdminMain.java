@@ -5,6 +5,8 @@
  */
 package UserInterface.Sysadmin;
 
+import InterfaceMain.MainJFrame;
+
 /**
  *
  * @author Alex Zhu
@@ -34,15 +36,30 @@ public class UserAdminMain extends javax.swing.JPanel {
 
         btnLesee.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         btnLesee.setText("Lessee Manage");
+        btnLesee.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLeseeActionPerformed(evt);
+            }
+        });
 
         btnDriver.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         btnDriver.setText("Driver Manage");
+        btnDriver.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDriverActionPerformed(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("宋体", 0, 24)); // NOI18N
         jLabel1.setText("User Admin");
 
         btnLesor.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         btnLesor.setText("Lessor Manage");
+        btnLesor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLesorActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -75,6 +92,24 @@ public class UserAdminMain extends javax.swing.JPanel {
                 .addContainerGap(203, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnLeseeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLeseeActionPerformed
+        // TODO add your handling code here:
+        ManageLessee mle = new ManageLessee();
+        MainJFrame.jSplitPane1.setRightComponent(mle);
+    }//GEN-LAST:event_btnLeseeActionPerformed
+
+    private void btnLesorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLesorActionPerformed
+        // TODO add your handling code here:
+        ManageLessor mlo = new ManageLessor();
+        MainJFrame.jSplitPane1.setRightComponent(mlo);
+    }//GEN-LAST:event_btnLesorActionPerformed
+
+    private void btnDriverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDriverActionPerformed
+        // TODO add your handling code here:
+        ManageDriver md = new ManageDriver();
+        MainJFrame.jSplitPane1.setRightComponent(md);
+    }//GEN-LAST:event_btnDriverActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

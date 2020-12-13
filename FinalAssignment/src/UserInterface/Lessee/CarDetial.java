@@ -5,11 +5,23 @@
  */
 package UserInterface.Lessee;
 
+import InterfaceMain.MainJFrame;
+import com.br.dao.CarDao;
+import com.br.dao.OrderDao;
+import com.br.daoImpl.CarDaoImpl;
+import com.br.daoImpl.OrderDaoImpl;
+import com.br.entity.Order;
+import java.util.UUID;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Alex Zhu
  */
 public class CarDetial extends javax.swing.JPanel {
+    
+    private CarDao carDao = new CarDaoImpl();
+    private OrderDao orderDao = new OrderDaoImpl();
 
     /**
      * Creates new form CarDetial
@@ -27,6 +39,7 @@ public class CarDetial extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -72,9 +85,33 @@ public class CarDetial extends javax.swing.JPanel {
 
         jButton1.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jButton1.setText("Back");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jButton2.setText("Confirm");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        txtBrand.setText(UserInterface.Lessee.CarFinder.viewCarDetail.getBrand());
+
+        txtModel.setText(UserInterface.Lessee.CarFinder.viewCarDetail.getModel());
+
+        txtSeats.setText(UserInterface.Lessee.CarFinder.viewCarDetail.getSeats());
+
+        txtPrice.setText(UserInterface.Lessee.CarFinder.viewCarDetail.getPrice());
+
+        txtCarNumber.setText(UserInterface.Lessee.CarFinder.viewCarDetail.getCarNumber());
+
+        txtFromTime.setText(UserInterface.Lessee.CarFinder.viewCarDetail.getAviliableTime().split("To")[0]);
+
+        txtEndTine.setText(UserInterface.Lessee.CarFinder.viewCarDetail.getAviliableTime().split("To")[1]);
 
         jLabel8.setText("From");
 
@@ -83,8 +120,10 @@ public class CarDetial extends javax.swing.JPanel {
         jLabel10.setFont(new java.awt.Font("宋体", 0, 14)); // NOI18N
         jLabel10.setText("Need Driver");
 
+        buttonGroup1.add(rbYes);
         rbYes.setText("yes");
 
+        buttonGroup1.add(rbNo);
         rbNo.setText("No");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -184,8 +223,49 @@ public class CarDetial extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        CarFinder cf = new CarFinder();
+        MainJFrame.jSplitPane1.setRightComponent(cf);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        String needDriver = "";
+        		if(rbYes.isSelected()) {
+        			//需要司机
+        			needDriver = "yes";
+        		}else if(rbNo.isSelected()) {
+        			//不需要司机
+        			needDriver = "no";
+        		}
+        		if(("").equals(needDriver)) {
+        			JOptionPane.showMessageDialog(null, "请选择是否需要司机");
+        		}else {
+        			Order order = new Order();
+        			order.setCarId(UserInterface.Lessee.CarFinder.viewCarDetail.getId());
+        			order.setComment("");
+        			order.setId(UUID.randomUUID().toString());
+        			order.setOrderUser(MainJFrame.currentUser.getId());
+        			order.setNeddDriver(needDriver);
+        			order.setIfReturn("0");
+        			order.setOrderComfirm("0");
+        			Boolean addFlag = orderDao.addOrder(order);
+        			if(addFlag == true) {
+        				UserInterface.Lessee.CarFinder.viewCarDetail.setStatus_by("1");
+        				carDao.updateCar(UserInterface.Lessee.CarFinder.viewCarDetail);
+        				JOptionPane.showMessageDialog(null, "下单成功");
+        				AllMyOrder amo = new AllMyOrder();
+        				MainJFrame.jSplitPane1.setRightComponent(amo);
+        			}else {
+        				JOptionPane.showMessageDialog(null, "发生错误，下单失败");
+        			}
+        		}
+    }//GEN-LAST:event_jButton2ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;

@@ -5,17 +5,37 @@
  */
 package UserInterface.Lessee;
 
+import InterfaceMain.MainJFrame;
+import com.br.dao.CarDao;
+import com.br.daoImpl.CarDaoImpl;
+import com.br.entity.Car;
+import java.util.Vector;
+import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Alex Zhu
  */
 public class CarFinder extends javax.swing.JPanel {
+    
+    private CarDao carDao = new CarDaoImpl();
+    public static Car viewCarDetail = null;
 
     /**
      * Creates new form CarFinder
      */
     public CarFinder() {
         initComponents();
+        try {
+            initTable();
+        } catch (SQLException ex) {
+            Logger.getLogger(CarFinder.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -47,9 +67,19 @@ public class CarFinder extends javax.swing.JPanel {
         jScrollPane1.setViewportView(jTable1);
 
         btnView.setText("View Detail");
+        btnView.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViewActionPerformed(evt);
+            }
+        });
 
         btnBack.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
         btnBack.setText("BACK");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -86,6 +116,38 @@ public class CarFinder extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        // TODO add your handling code here:
+        JPanel lesseePanel = new LesseeMain();
+        MainJFrame.jSplitPane1.setRightComponent(lesseePanel);
+    }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewActionPerformed
+        // TODO add your handling code here:
+        Integer id = (Integer)jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+        viewCarDetail = carDao.selectById(id);
+        CarDetial cd = new CarDetial();
+        MainJFrame.jSplitPane1.setRightComponent(cd);
+    }//GEN-LAST:event_btnViewActionPerformed
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public void initTable() throws SQLException {
+		DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
+		dtm.setRowCount(0);
+		ResultSet rs = carDao.selectAll();
+		while (rs.next()) {
+			if(("0").equals(rs.getString("status_by"))) {
+				Vector v = new Vector();
+				v.add(rs.getInt("id"));
+				v.add(rs.getString("brand"));
+				v.add(rs.getString("model"));
+				v.add(rs.getString("seats"));
+				v.add(rs.getString("price"));
+				v.add(rs.getString("aviliable_time"));
+				dtm.addRow(v);
+			}
+		}
+	}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;

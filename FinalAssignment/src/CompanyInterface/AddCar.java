@@ -5,13 +5,21 @@
  */
 package CompanyInterface;
 
+import InterfaceMain.MainJFrame;
 import UserInterface.Lessee.*;
+import com.br.dao.CarDao;
+import com.br.daoImpl.CarDaoImpl;
+import com.br.entity.Car;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 /**
  *
  * @author Alex Zhu
  */
 public class AddCar extends javax.swing.JPanel {
+    
+    private CarDao carDao = new CarDaoImpl();
 
     /**
      * Creates new form CarDetial
@@ -71,9 +79,19 @@ public class AddCar extends javax.swing.JPanel {
 
         jButton1.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jButton1.setText("Back");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jButton2.setText("Add");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jLabel8.setText("From");
 
@@ -100,25 +118,28 @@ public class AddCar extends javax.swing.JPanel {
                             .addComponent(jLabel7)
                             .addComponent(jLabel6))
                         .addGap(88, 88, 88)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txtCarNumber, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
-                                .addComponent(txtPrice, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
-                                .addComponent(txtSeats, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
-                                .addComponent(txtModel, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
-                                .addComponent(txtBrand))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel8)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(5, 5, 5)
+                                        .addComponent(jLabel8)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(txtFromTime, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txtCarNumber, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtFromTime, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(21, 21, 21)
-                        .addComponent(jLabel9)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtEndTine, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jLabel9)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtEndTine, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(txtPrice, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
+                                .addComponent(txtSeats, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtModel, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtBrand, javax.swing.GroupLayout.Alignment.LEADING))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(346, 346, 346)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(209, Short.MAX_VALUE))
+                .addContainerGap(120, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -163,6 +184,46 @@ public class AddCar extends javax.swing.JPanel {
                 .addContainerGap(127, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        JPanel ManagerCar = new ManageCar();
+        MainJFrame.jSplitPane1.setRightComponent(ManagerCar);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        String brand = txtBrand.getText().toString();
+        		String model = txtModel.getText().toString();
+        		String seats = txtSeats.getText().toString();
+        		String price  = txtPrice.getText().toString();
+        		String beginTime = txtFromTime.getText().toString();
+        		String endTime = txtEndTine.getText().toString();
+        		String carNumber = txtCarNumber.getText().toString();
+        		if(("").equals(brand) || ("").equals(model) || ("").equals(seats) || ("").equals(price) 
+        				|| ("").equals(beginTime) || ("").equals(endTime) || ("").equals(carNumber)) {
+        			JOptionPane.showMessageDialog(null, "请输入完整信息");
+        		}else {
+        			Car car = new Car();
+        			car.setBrand(brand);
+        			car.setModel(model);
+        			car.setSeats(seats);
+        			car.setPrice(price);
+        			car.setBelongUser(MainJFrame.currentUser.getId());
+        			car.setAviliableTime(beginTime + "To" + endTime);
+        			car.setCarNumber(carNumber);
+        			car.setStatus("0");
+        			car.setStatus_by("0");
+        			Boolean addFlag = carDao.addCar(car);
+        			if(addFlag == true) {
+        				JOptionPane.showMessageDialog(null, "添加成功");
+        				JPanel ManagerCar = new ManageCar();
+                		MainJFrame.jSplitPane1.setRightComponent(ManagerCar);
+        			}else {
+        				JOptionPane.showMessageDialog(null, "发生错误，添加失败");
+        			}
+        		}
+    }//GEN-LAST:event_jButton2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

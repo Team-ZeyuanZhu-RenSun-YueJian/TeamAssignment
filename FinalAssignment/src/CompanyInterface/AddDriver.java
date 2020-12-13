@@ -5,13 +5,22 @@
  */
 package CompanyInterface;
 
-import UserInterface.Register.*;
+//import UserInterface.Register.*;
+
+import InterfaceMain.MainJFrame;
+import com.br.dao.UserDao;
+import com.br.daoImpl.UserDaoImpl;
+import com.br.entity.User;
+import javax.swing.JOptionPane;
+
 
 /**
  *
  * @author Alex Zhu
  */
 public class AddDriver extends javax.swing.JPanel {
+    
+    private UserDao userDao = new UserDaoImpl();
 
     /**
      * Creates new form CreatCustomer
@@ -50,6 +59,11 @@ public class AddDriver extends javax.swing.JPanel {
 
         btnBack.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
         btnBack.setText("BACK");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("宋体", 0, 14)); // NOI18N
         jLabel2.setText("Age");
@@ -65,6 +79,11 @@ public class AddDriver extends javax.swing.JPanel {
 
         btnRegister.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         btnRegister.setText("Add");
+        btnRegister.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegisterActionPerformed(evt);
+            }
+        });
 
         jLabel6.setFont(new java.awt.Font("宋体", 0, 14)); // NOI18N
         jLabel6.setText("User Name");
@@ -146,6 +165,49 @@ public class AddDriver extends javax.swing.JPanel {
                 .addGap(183, 183, 183))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        // TODO add your handling code here:
+        ManageDriver md = new ManageDriver();
+        MainJFrame.jSplitPane1.setRightComponent(md);
+    }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterActionPerformed
+        // TODO add your handling code here:
+        String user_number = txtUserName.getText().toString();
+        		String user_password = txtPassword.getText().toString();
+        		String user_name = txtName.getText().toString();
+        		String user_driver_license_id = txtID.getText().toString();
+        		String user_age = txtAge.getText().toString();
+        		String user_tel = txtPhoneNo.getText().toString();
+        		if(("").equals(user_number) || ("").equals(user_password) || ("").equals(user_name) 
+        				|| ("").equals(user_driver_license_id) || ("").equals(user_age) || ("").equals(user_tel)) {
+        			JOptionPane.showMessageDialog(null, "请输入完整信息");
+        		}else {
+        			if(userDao.selectByNumber(user_number,"司机") != null) {
+        				JOptionPane.showMessageDialog(null, "该账号已被使用");
+        			}else {
+                                User u = new User();
+            			u.setUserName(user_name);
+            			u.setUserNumber(user_number);
+            			u.setUserPassword(user_password);
+            			u.setUserType("司机");
+            			u.setUserDriverLicenseId(user_driver_license_id);
+            			u.setUserAge(user_age);
+            			u.setUserTel(user_tel);
+            			u.setStatus("0");
+            			u.setStatus_by("0");
+            			Boolean addFlag = userDao.addUser(u);
+            			if(addFlag == true) {
+            				JOptionPane.showMessageDialog(null, "添加成功");
+            				ManageDriver md = new ManageDriver();
+            				MainJFrame.jSplitPane1.setRightComponent(md);
+            			}else {
+            				JOptionPane.showMessageDialog(null, "发生错误，添加失败");
+            			}
+        			}
+        		}
+    }//GEN-LAST:event_btnRegisterActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

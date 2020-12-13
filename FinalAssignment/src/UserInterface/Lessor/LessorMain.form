@@ -64,6 +64,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="All My Car"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCarListActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnAddCar">
       <Properties>
@@ -72,6 +75,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Add a Car"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddCarActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

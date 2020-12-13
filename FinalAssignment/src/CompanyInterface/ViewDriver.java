@@ -5,6 +5,7 @@
  */
 package CompanyInterface;
 
+import InterfaceMain.MainJFrame;
 import UserInterface.Sysadmin.*;
 
 /**
@@ -55,9 +56,18 @@ public class ViewDriver extends javax.swing.JPanel {
 
         btnBack.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
         btnBack.setText("BACK");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
+
+        txtUserName.setText(CompanyInterface.ManageDriver.viewDriver.getUserNumber());
 
         jLabel2.setFont(new java.awt.Font("宋体", 0, 14)); // NOI18N
         jLabel2.setText("Age");
+
+        txtPassword.setText(CompanyInterface.ManageDriver.viewDriver.getUserPassword());
 
         jLabel3.setFont(new java.awt.Font("宋体", 0, 14)); // NOI18N
         jLabel3.setText("Driver license ID");
@@ -67,6 +77,14 @@ public class ViewDriver extends javax.swing.JPanel {
 
         jLabel5.setFont(new java.awt.Font("宋体", 0, 14)); // NOI18N
         jLabel5.setText("Phone Number");
+
+        txtName.setText(CompanyInterface.ManageDriver.viewDriver.getUserName());
+
+        txtID.setText(CompanyInterface.ManageDriver.viewDriver.getUserDriverLicenseId());
+
+        txtPhoneNo.setText(CompanyInterface.ManageDriver.viewDriver.getUserTel());
+
+        txtAge.setText(CompanyInterface.ManageDriver.viewDriver.getUserAge());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -138,6 +156,12 @@ public class ViewDriver extends javax.swing.JPanel {
                 .addContainerGap(219, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        // TODO add your handling code here:
+        ManageDriver md = new ManageDriver();
+        MainJFrame.jSplitPane1.setRightComponent(md);
+    }//GEN-LAST:event_btnBackActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

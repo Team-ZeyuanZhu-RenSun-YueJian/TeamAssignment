@@ -6,6 +6,7 @@
 package UserInterface.Lessor;
 
 import CompanyInterface.*;
+import InterfaceMain.MainJFrame;
 import UserInterface.Lessee.*;
 
 /**
@@ -71,6 +72,25 @@ public class ViewCar extends javax.swing.JPanel {
 
         jButton1.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jButton1.setText("Back");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        txtBrand.setText(UserInterface.Lessor.AllMyCar.viewCar.getBrand());
+
+        txtModel.setText(UserInterface.Lessor.AllMyCar.viewCar.getModel());
+
+        txtSeats.setText(UserInterface.Lessor.AllMyCar.viewCar.getSeats());
+
+        txtPrice.setText(UserInterface.Lessor.AllMyCar.viewCar.getPrice());
+
+        txtCarNumber.setText(UserInterface.Lessor.AllMyCar.viewCar.getCarNumber());
+
+        txtFromTime.setText(UserInterface.Lessor.AllMyCar.viewCar.getAviliableTime().split("To")[0]);
+
+        txtEndTine.setText(UserInterface.Lessor.AllMyCar.viewCar.getAviliableTime().split("To")[1]);
 
         jLabel8.setText("From");
 
@@ -155,6 +175,12 @@ public class ViewCar extends javax.swing.JPanel {
                 .addContainerGap(223, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        AllMyCar amc = new AllMyCar();
+        MainJFrame.jSplitPane1.setRightComponent(amc);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

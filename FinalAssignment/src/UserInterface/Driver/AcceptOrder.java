@@ -5,17 +5,40 @@
  */
 package UserInterface.Driver;
 
+import InterfaceMain.MainJFrame;
+import com.br.dao.OrderDao;
+import com.br.dao.UserDao;
+import com.br.daoImpl.OrderDaoImpl;
+import com.br.daoImpl.UserDaoImpl;
+import com.br.entity.User;
+import java.util.Vector;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Alex Zhu
  */
 public class AcceptOrder extends javax.swing.JPanel {
+    
+    private OrderDao orderDao = new OrderDaoImpl();
+    private UserDao userDao = new UserDaoImpl();
 
     /**
      * Creates new form DriverMain
      */
     public AcceptOrder() {
         initComponents();
+        try {
+            initTable();
+        } catch (SQLException ex) {
+            Logger.getLogger(AcceptOrder.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -48,9 +71,19 @@ public class AcceptOrder extends javax.swing.JPanel {
 
         jButton1.setFont(new java.awt.Font("宋体", 0, 14)); // NOI18N
         jButton1.setText("Accept");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         btnBack.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         btnBack.setText("BACK");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -65,10 +98,11 @@ public class AcceptOrder extends javax.swing.JPanel {
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(265, 265, 265)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton1)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(268, Short.MAX_VALUE))
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(153, 153, 153)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 688, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(144, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -88,7 +122,53 @@ public class AcceptOrder extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        // TODO add your handling code here:
+        JPanel DriverPanel = new DriverMain();
+        MainJFrame.jSplitPane1.setRightComponent(DriverPanel);
+    }//GEN-LAST:event_btnBackActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        if(("0").equals(MainJFrame.currentUser.getStatus())){
+            JOptionPane.showMessageDialog(null, "您未认证，不能接单");
+        }else{
+            if(("1").equals(MainJFrame.currentUser.getStatus_by())) {
+        			JOptionPane.showMessageDialog(null, "您当前还有未完成订单！");
+        		}else {
+        			String id = (String)jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            		Boolean updateFlag = orderDao.updateDriver(id, MainJFrame.currentUser.getId());
+            		if(updateFlag == true) {
+            			User d = userDao.selectById(MainJFrame.currentUser.getId());
+            			d.setStatus_by("1");
+            			userDao.updateUser(d);
+            			JOptionPane.showMessageDialog(null, "接单成功");
+            			MyOrder mo = new MyOrder();
+            			MainJFrame.jSplitPane1.setRightComponent(mo);
+            		}else {
+            			JOptionPane.showMessageDialog(null, "发生错误，接单失败");
+            		}
+        		}
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    @SuppressWarnings({ "unchecked", "rawtypes", "unused" })
+   	public void initTable() throws SQLException {
+   		DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
+   		dtm.setRowCount(0);
+   		ResultSet rs = orderDao.selectAll();
+   		while (rs.next()) {
+   			//只显示需要司机的,斌且公司已经确认的
+   			if(("yes").equals(rs.getString("need_driver")) && ("1").equals(rs.getString("order_comfirm")) && ("0").equals(rs.getInt("order_driver") + "")) {
+   				Vector v = new Vector();
+   	   			v.add(rs.getString("id"));
+   	   			v.add(rs.getString("user_name"));
+   	   			v.add(rs.getString("model") );
+   	   			dtm.addRow(v);
+   			}
+   		}
+   	}
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
     private javax.swing.JButton jButton1;
